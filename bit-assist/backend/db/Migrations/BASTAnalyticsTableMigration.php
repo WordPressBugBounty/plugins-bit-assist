@@ -1,8 +1,9 @@
 <?php
 
-use BitApps\Assist\Core\Database\Blueprint;
-use BitApps\Assist\Core\Database\Migration;
-use BitApps\Assist\Core\Database\Schema;
+use BitApps\Assist\Config;
+use BitApps\Assist\Deps\BitApps\WPDatabase\Blueprint;
+use BitApps\Assist\Deps\BitApps\WPKit\Migration\Migration;
+use BitApps\Assist\Deps\BitApps\WPDatabase\Schema;
 
 if (!\defined('ABSPATH')) {
     exit;
@@ -12,7 +13,7 @@ final class BASTAnalyticsTableMigration extends Migration
 {
     public function up()
     {
-        Schema::create('analytics', function (Blueprint $table) {
+        Schema::withPrefix(Config::get('DB_PREFIX'))->create('analytics', function (Blueprint $table) {
             $table->bigint('widget_id', 20)->unsigned()->foreign('widgets', 'id')->onDelete()->cascade();
             $table->bigint('channel_id', 20)->nullable()->unsigned()->foreign('widget_channels', 'id')->onDelete()->cascade();
             $table->tinyint('is_clicked')->defaultValue(0);
@@ -22,6 +23,6 @@ final class BASTAnalyticsTableMigration extends Migration
 
     public function down()
     {
-        Schema::drop('analytics');
+        Schema::withPrefix(Config::get('DB_PREFIX'))->drop('analytics');
     }
 }

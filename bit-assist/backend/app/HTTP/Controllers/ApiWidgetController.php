@@ -4,7 +4,7 @@ namespace BitApps\Assist\HTTP\Controllers;
 
 use AllowDynamicProperties;
 use BitApps\Assist\Config;
-use BitApps\Assist\Core\Http\Request\Request;
+use BitApps\Assist\Deps\BitApps\WPKit\Http\Request\Request;
 use BitApps\Assist\Model\Widget;
 use BitApps\Assist\Model\WidgetChannel;
 use BitApps\AssistPro\Config as ProConfig;
@@ -16,10 +16,6 @@ final class ApiWidgetController
 {
     private $isPro = false;
 
-    private $allDifferentChannels = ['FAQ', 'Knowledge-Base', 'Custom-Form', 'WP-Search', 'WooCommerce'];
-
-    private $allSimilarChannels = ['Google-Map', 'Youtube', 'Custom-Iframe'];
-
     public function __construct()
     {
         $this->isPro = class_exists(ProConfig::class) && ProConfig::isPro();
@@ -27,70 +23,67 @@ final class ApiWidgetController
 
     public function bitAssistWidget(Request $request)
     {
-        $version = Config::VERSION;
-        $baseURL = Config::get('BASEDIR_ROOT');
-
         $widget = $this->getWidget($request->domain);
 
         if (!isset($widget->id)) {
-            $this->makeFilesAndDbOptionEmpty($baseURL);
-
             return 'Widget not found';
         }
 
         $widgetChannels = $this->getChannelsByWidget($widget->id);
 
         if (\is_null($widgetChannels)) {
-            $this->makeFilesAndDbOptionEmpty($baseURL);
-
             return 'Widget channels not found';
         }
 
-        return $this->getActiveChannels($widget, $baseURL, $version, $widgetChannels);
+        $widget->widget_channels = $widgetChannels;
+
+        $widget->isAnalyticsActivate = (int) Config::getOption('analytics_activate');
+
+        return $widget;
     }
 
     public function wpSearch(Request $request)
     {
-        $validate = $request->validate([
-            'search' => ['string']
+        $validated = $request->validate([
+            'search'      => ['string', 'sanitize:text'],
+            'page'        => ['integer'],
+            'postTypes.*' => ['nullable', 'string', 'sanitize:text'],
         ]);
-        if (!empty($validate)) {
-            return ['message' => 'Search query is not a valid string!', 'status_code' => 404];
+
+        $postTypes = $validated['postTypes'] ?? ['page', 'post'];
+
+        if (empty($postTypes)) {
+            return ['data' => [], 'pagination' => []];
         }
 
-        return $this->getPageAndPosts($request->search, $request->page);
+        return $this->getPageAndPosts($validated['search'], $validated['page'], $postTypes);
     }
 
-    private function getPageAndPosts($search, $page)
+    private function getPageAndPosts($search, $page, $postTypes)
     {
         $paged = !empty($page) ? $page : 1;
-        $args  = [
-            'post_type'      => ['page', 'post'],
+
+        $query = new WP_Query([
+            'post_type'      => $postTypes,
             'post_status'    => 'publish',
             'posts_per_page' => 10,
             's'              => $search,
             'orderby'        => 'title',
             'order'          => 'ASC',
             'paged'          => $paged,
-            'fields'         => 'ids'
-        ];
+        ]);
 
-        $query = new WP_Query($args);
+        $posts = [];
 
-        $results = [];
-        foreach ($query->posts as $post_id) {
-            $post = get_post($post_id);
-
-            $result = [
-                'guid'       => get_permalink($post_id),
+        foreach ($query->posts as $post) {
+            $posts[] = [
+                'guid'       => $post->guid,
                 'post_title' => $post->post_title,
                 'post_type'  => $post->post_type,
             ];
-
-            $results[] = $result;
         }
 
-        $query->pagination = [
+        $pagination = [
             'total'        => $query->max_num_pages,
             'current'      => $paged,
             'next'         => $paged + 1,
@@ -98,8 +91,8 @@ final class ApiWidgetController
             'has_next'     => $paged < $query->max_num_pages,
             'has_previous' => $paged > 1,
         ];
-        
-        return ['data' => $results, 'pagination' => $query->pagination];
+
+        return ['data' => $posts, 'pagination' => $pagination];
     }
 
     public function orderDetails(Request $request)
@@ -108,9 +101,9 @@ final class ApiWidgetController
             return ['message' => 'WooCommerce not installed or active.', 'status_code' => 404];
         }
 
-        $order_id      = $request['number'];
+        $order_id = $request['number'];
         $billing_email = $request['email'];
-        $allOrders     = [];
+        $allOrders = [];
 
         global $wpdb;
 
@@ -129,7 +122,8 @@ final class ApiWidgetController
         } elseif ($billing_email) {
             $query = $wpdb->prepare(
                 "SELECT * FROM {$wpdb->postmeta} WHERE meta_key = %s AND meta_value = %s",
-                '_billing_email', $billing_email
+                '_billing_email',
+                $billing_email
             );
 
             $orders = $wpdb->get_results($query);
@@ -137,7 +131,7 @@ final class ApiWidgetController
             if ($orders) {
                 foreach ($orders as $order) {
                     $order_details = wc_get_order($order->post_id);
-                    $allOrders[]   = $order_details;
+                    $allOrders[] = $order_details;
                 }
                 $data = $this->allOrderWithPagination($request, $allOrders);
 
@@ -148,141 +142,6 @@ final class ApiWidgetController
         }
 
         return ['message' => 'No order found', 'status_code' => 404];
-    }
-
-    private function makeFilesAndDbOptionEmpty($baseURL)
-    {
-        $activeChannelWPOptions = Config::getOption('active_channels');
-
-        $activeChannelWPOptions['channel_names']  = '';
-        $activeChannelWPOptions['channel_status'] = 0;
-        Config::updateOption('active_channels', $activeChannelWPOptions);
-
-        file_put_contents($baseURL . 'iframe/assets/channels/features.js', '');
-
-        if (Config::isDev()) {
-            file_put_contents($baseURL . 'client/packages/widget-iframe/channels/features.js', '');
-        }
-    }
-
-    private function getActiveChannels($widget, $baseURL, $version, $widgetChannels)
-    {
-        $widget->widget_channels = $widgetChannels;
-
-        $activeChannelWPOptions = Config::getOption('active_channels');
-
-        $this->getChannels($baseURL, $widget, $activeChannelWPOptions, $version);
-
-        $get_options_version = Config::getOption('active_channels');
-        $new_version         = $get_options_version['version'];
-
-        $widget->featuresJsPath = Config::isDev() ? "./channels/features.js?ver={$new_version}" : plugins_url() . '/' . Config::SLUG . "/iframe/assets/channels/features.js?ver={$new_version}";
-
-        $widget->isAnalyticsActivate = (int)Config::getOption('analytics_activate');
-
-        return $widget;
-    }
-
-    private function getChannels($baseURL, $widget, $activeChannelWPOptions, $version)
-    {
-        $activeChannels = [];
-        $outputFilePath = '';
-
-        if (Config::isDev()) {
-            $importJsArray[] = file_get_contents($baseURL . 'client/packages/widget-iframe/channels/common.js');
-            $outputFilePath  = $baseURL . 'client/packages/widget-iframe/channels/features.js';
-        }
-
-        $importJsIframe[]     = file_get_contents($baseURL . 'iframe/assets/channels/common.js');
-        $outputFilePathIframe = $baseURL . 'iframe/assets/channels/features.js';
-
-        $channel_names          = $this->getActiveChannelsNameString($widget, $activeChannelWPOptions, $version);
-        $activeChannelWPOptions = $this->updateOptionOnChannelChange($activeChannelWPOptions, $channel_names, $version);
-
-        if ($activeChannelWPOptions['channel_status'] == 0 || !file_exists($outputFilePathIframe)) {
-            $importJsArray  = [];
-            $importJsIframe = [];
-
-            if (Config::isDev()) {
-                $importJsArray[]  = file_get_contents($baseURL . 'client/packages/widget-iframe/channels/common.js');
-            }
-            $importJsIframe[] = file_get_contents($baseURL . 'iframe/assets/channels/common.js');
-
-            foreach ($widget->widget_channels as $channel) {
-                if (\in_array($channel->channel_name, $this->allDifferentChannels)) {
-                    if (\in_array($channel->channel_name, $activeChannels)) {
-                        continue;
-                    }
-
-                    $activeChannels[] = $channel->channel_name;
-
-                    if (Config::isDev()) {
-                        $importJsArray[] = file_get_contents($baseURL . 'client/packages/widget-iframe/channels/' . strtolower(str_replace('-', '_', $channel->channel_name)) . '.js');
-
-                        $importJsIframe[] = file_get_contents($baseURL . 'iframe/assets/channels/' . strtolower(str_replace('-', '_', $channel->channel_name)) . '.js');
-                    } else {
-                        $importJsIframe[] = file_get_contents($baseURL . 'iframe/assets/channels/' . strtolower(str_replace('-', '_', $channel->channel_name)) . '.js');
-                    }
-                }
-
-                if (\in_array($channel->channel_name, $this->allSimilarChannels)) {
-                    if (\in_array('Google-Map', $activeChannels) || \in_array('Youtube', $activeChannels) || \in_array('Custom-Iframe', $activeChannels)) {
-                        continue;
-                    }
-
-                    $activeChannels[] = $channel->channel_name;
-
-                    if (Config::isDev()) {
-                        $importJsArray[] = file_get_contents($baseURL . 'client/packages/widget-iframe/channels/custom_iframe.js');
-
-                        $importJsIframe[] = file_get_contents($baseURL . 'iframe/assets/channels/custom_iframe.js');
-                    } else {
-                        $importJsIframe[] = file_get_contents($baseURL . 'iframe/assets/channels/custom_iframe.js');
-                    }
-                }
-            }
-
-            $this->writeActiveChannelsJS($activeChannelWPOptions, $channel_names, $outputFilePathIframe, $importJsIframe, $outputFilePath, $importJsArray);
-        }
-    }
-
-    private function getActiveChannelsNameString($widget)
-    {
-        $channel_names = '';
-
-        foreach ($widget->widget_channels as $channel) {
-            $channel_names .= $channel->channel_name;
-        }
-
-        return $channel_names;
-    }
-
-    private function updateOptionOnChannelChange($activeChannelWPOptions, $channel_names, $version)
-    {
-        if ($activeChannelWPOptions['channel_names'] != $channel_names) {
-            $activeChannelWPOptions['channel_status'] = 0;
-            $activeChannelWPOptions['version']        = $version . '.' . wp_rand(10000, 9999999) . strtotime('now');
-
-            Config::updateOption('active_channels', $activeChannelWPOptions);
-        }
-
-        return $activeChannelWPOptions;
-    }
-
-    private function writeActiveChannelsJS($activeChannelWPOptions, $channel_names, $outputFilePathIframe, $importJsIframe, $outputFilePath, $importJsArray)
-    {
-        if ($activeChannelWPOptions['channel_names'] != $channel_names || !file_exists($outputFilePathIframe)) {
-            $activeChannelWPOptions['channel_status'] = 1;
-            $activeChannelWPOptions['channel_names']  = $channel_names;
-            Config::updateOption('active_channels', $activeChannelWPOptions);
-
-            if (Config::isDev()) {
-                file_put_contents($outputFilePathIframe, implode(PHP_EOL, $importJsIframe));
-                file_put_contents($outputFilePath, implode(PHP_EOL, $importJsArray));
-            } else {
-                file_put_contents($outputFilePathIframe, implode(PHP_EOL, $importJsIframe));
-            }
-        }
     }
 
     private function getWidget($domain)
@@ -318,8 +177,8 @@ final class ApiWidgetController
     private function getChannelsByWidget($widgetId)
     {
         $widgetChannels = WidgetChannel::where('status', 1)->where('widget_id', $widgetId)->orderBy('sequence')->get(['id', 'channel_name', 'config']);
-        if (\count($widgetChannels) < 1) {
-            return;
+        if (!is_array($widgetChannels) || \count($widgetChannels) < 1) {
+            return null;
         }
 
         $rootURL = Config::get('ROOT_URI');
@@ -344,7 +203,7 @@ final class ApiWidgetController
     {
         if ($channel->channel_name === 'Custom-Channel') {
             $channel->config->unique_id = esc_url_raw($channel->config->unique_id);
-            $channel->config->url       = esc_url_raw($channel->config->url);
+            $channel->config->url = esc_url_raw($channel->config->url);
         }
 
         if ($channel->channel_name === 'Google-Map') {
@@ -353,7 +212,7 @@ final class ApiWidgetController
 
         if ($channel->channel_name === 'Custom-Iframe') {
             $channel->config->unique_id = esc_url_raw($channel->config->unique_id);
-            $channel->config->url       = esc_url_raw($channel->config->url);
+            $channel->config->url = esc_url_raw($channel->config->url);
         }
 
         if ($channel->channel_name === 'FAQ' || $channel->channel_name === 'Knowledge-Base') {
@@ -388,9 +247,8 @@ final class ApiWidgetController
 
     private function escapeTitle($channel)
     {
-
-        $faqs  = new stdClass();
-        $kbs   = new stdClass();
+        $faqs = new stdClass();
+        $kbs = new stdClass();
 
         if ($channel->channel_name === 'FAQ') {
             $faqs = &$channel->config->card_config->faqs;
@@ -415,12 +273,12 @@ final class ApiWidgetController
 
     private function getOrderWithIdAndMail($order_id)
     {
-        $order_details   = wc_get_order($order_id);
+        $order_details = wc_get_order($order_id);
         $shipping_status = $order_details->get_status();
-        $total_items     = $order_details->get_item_count();
-        $total_amount    = $order_details->get_total();
-        $billing_name    = $order_details->get_billing_first_name() . ' ' . $order_details->get_billing_last_name();
-        $shipping_name   = $order_details->get_shipping_first_name() . ' ' . $order_details->get_shipping_last_name();
+        $total_items = $order_details->get_item_count();
+        $total_amount = $order_details->get_total();
+        $billing_name = $order_details->get_billing_first_name() . ' ' . $order_details->get_billing_last_name();
+        $shipping_name = $order_details->get_shipping_first_name() . ' ' . $order_details->get_shipping_last_name();
 
         $item[] = ['order_id' => $order_id, 'shipping_status' => $shipping_status, 'total_items' => $total_items, 'total_amount' => $total_amount, 'billing_name' => $billing_name, 'shipping_name' => $shipping_name];
 
@@ -429,7 +287,7 @@ final class ApiWidgetController
 
     private function allOrderWithPagination($request, $allOrders)
     {
-        $paged    = !empty($request['page']) ? $request['page'] : 1;
+        $paged = !empty($request['page']) ? $request['page'] : 1;
         $per_page = 10;
 
         $args = [
@@ -464,14 +322,14 @@ final class ApiWidgetController
         $items = [];
 
         foreach ($orders_query->posts as $order) {
-            $order_id      = $order->ID;
+            $order_id = $order->ID;
             $order_details = wc_get_order($order_id);
 
-            $item_count      = $order_details->get_item_count();
-            $total           = $order_details->get_total();
+            $item_count = $order_details->get_item_count();
+            $total = $order_details->get_total();
             $shipping_status = $order_details->get_status('shipping');
-            $shipping_name   = $order_details->get_shipping_first_name() . ' ' . $order_details->get_shipping_last_name();
-            $billing_name    = $order_details->get_billing_first_name() . ' ' . $order_details->get_billing_last_name();
+            $shipping_name = $order_details->get_shipping_first_name() . ' ' . $order_details->get_shipping_last_name();
+            $billing_name = $order_details->get_billing_first_name() . ' ' . $order_details->get_billing_last_name();
 
             $items[] = ['order_id' => $order_id, 'shipping_status' => $shipping_status, 'total_items' => $item_count, 'total_amount' => $total, 'billing_name' => $billing_name, 'shipping_name' => $shipping_name];
         }

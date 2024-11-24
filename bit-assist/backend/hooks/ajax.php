@@ -1,11 +1,12 @@
 <?php
 
-use BitApps\Assist\Core\Http\Router\Route;
+use BitApps\Assist\Deps\BitApps\WPKit\Http\Router\Route;
 use BitApps\Assist\HTTP\Controllers\AnalyticsController;
 use BitApps\Assist\HTTP\Controllers\DownloadController;
 use BitApps\Assist\HTTP\Controllers\ResponseController;
 use BitApps\Assist\HTTP\Controllers\WidgetChannelController;
 use BitApps\Assist\HTTP\Controllers\WidgetController;
+use BitApps\Assist\HTTP\Controllers\WPPostController;
 
 if (!\defined('ABSPATH')) {
     exit;
@@ -51,6 +52,8 @@ Route::group(function () {
     Route::post('analytics/toggle', [AnalyticsController::class, 'toggleAnalytics']);
     Route::post('analytics/channel', [AnalyticsController::class, 'getChannelAnalytics']);
     Route::post('analytics/destroy', [AnalyticsController::class, 'destroy']);
+
+    Route::get('getPostTypes', [WPPostController::class, 'getPostTypes']);
 
     Route::get('downloadResponseFile', [DownloadController::class, 'downloadResponseFile']);
 })->middleware('nonce');

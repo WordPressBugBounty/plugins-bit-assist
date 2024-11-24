@@ -1,6 +1,6 @@
 # WP Telemetry
 
-A simple telemetry library for WordPress. It allows you to send telemetry data to a remote server. It is designed to be simple and easy to use.
+This package provides a simple way to add telemetry tracking to your WordPress plugin. It sends weekly reports to your server with information about the plugin's usage.
 
 ## Usage
 
@@ -17,100 +17,108 @@ composer require bitapps/wp-telemetry
 Initialize the telemetry client in your plugin's bootstrap file.
 
 ```php
-function initialize_telemetry_client() {
-  TelemetryConfig::setSlug($title);
-  TelemetryConfig::setTitle($slug);
-  TelemetryConfig::setPrefix($prefix);
-  TelemetryConfig::setVersion($version);
+function initialize_telemetry_client()
+{
+  TelemetryConfig::setTitle($title);
+  TelemetryConfig::setSlug($plugin_slug);
+  TelemetryConfig::setPrefix($plugin_prefix);
+  TelemetryConfig::setVersion($plugin_version);
+
   TelemetryConfig::setServerBaseUrl( 'https://api.example.com/' );
+  TelemetryConfig::setTermsUrl( 'https://example.com/terms/' ); // (optional)
+  TelemetryConfig::setPolicyUrl( 'https://example.com/privacy/' ); // (optional)
 
-  TelemetryConfig::setTermsUrl( 'https://example.com/terms' ); // optional
-  TelemetryConfig::setPolicyUrl( 'https://example.com/privacy' ); // optional
-
-  // initialize tracking and reporting
-  Telemetry::report()->init();
-
-  // initialize deactivation feedback survey
-  Telemetry::feedback()->init();
+  Telemetry::report()->init(); // initialize telemetry tracking
+  Telemetry::feedback()->init(); // initialize deactivation feedback survey
 }
 
 initialize_telemetry_client();
 ```
 
-You are good to go! The telemetry client will start sending data to the default server.
+**You are good to go! 👍️**
+
+The telemetry client will start sending data `weekly` to your configured server url.
 
 ## Configuration
 
-All the configuration should be done in the `initialize_telemetry_client()` function.
+### # Activate/Deactivate Telemetry Tracking
+
+You can add a setting in your plugin settings page to allow users to opt-in or opt-out of telemetry tracking. You can use the following methods to change the opt-in/opt-out status.
+
+**⚡️ Opt In :**
+
+```php
+Telemetry::report()->trackingOptIn();
+```
+
+**⚡️ Opt Out :**
+
+```php
+Telemetry::report()->trackingOptOut();
+```
+
+**⚡️ Check if tracking is enabled**
+
+```php
+Telemetry::report()->isTrackingAllowed();
+```
 
 ### # Tracking Report Modify
 
-Add plugin information in tracking data
-
-```php
-TelemetryConfig::report()
-                ->addPluginData()
-                ->init();
-```
-
-**Filter Hook to Add Additional Data :**
+**⚡️ Filter Hook to Add Additional Data :**
 
 This filter allows adding additional data to track information used by the plugin. You can modify the `additional_data` array to include any custom data needed.
 
 ```php
-$plugin_prefix = 'my_plugin_prefix_';
+add_filter($plugin_prefix . 'telemetry_additional_data', 'customize_additional_data', 10, 1);
 
-add_filter($plugin_prefix . 'telemetry_additional_data', function($additional_data) {
-
-  // example: add custom data
-  $additional_data['my_custom_data'] = 'My Custom Data';
-
+function customize_additional_data($additional_data)
+{
+  // Do your stuffs here
   return $additional_data;
-});
+}
 ```
 
-**Filter Hook To Modify Telemetry Data :**
+**⚡️ Filter Hook To Modify Telemetry Data :**
 
-This filter allows modification of the telemetry data array before it is sent.
+This filter allows modifying the telemetry data before sending it to the server. You can modify the `$telemetry_data` array to include any custom data needed.
 
 ```php
-$plugin_prefix = 'my_plugin_prefix_';
+add_filter($plugin_prefix . 'telemetry_data', 'customize_telemetry_data', 10, 1);
 
-add_filter($plugin_prefix . 'telemetry_data', function($telemetry_data) {
-
-  // example: remove some data
-  unset($telemetry_data['some_data']);
-
-  // example: add custom data
-  $telemetry_data['my_custom_data'] = 'My Custom Data';
-
+function customize_telemetry_data($telemetry_data)
+{
+  // Do your stuffs here
   return $telemetry_data;
-});
+}
 ```
 
-### # Deactivate Feedback Config
-
-You can customize the feedback survey by adding questions using `add_filter()`
-
-- **title** - The title of the question
-- **placeholder** - The input placeholder of the question (optional)
+**⚡️ Add plugin information in tracking data**
 
 ```php
-$prefix = 'my_plugin_prefix_';
+Telemetry::report()
+                ->addPluginData()
+                ->init();
+```
 
-add_filter($prefix . 'deactivate_reasons', function ($default_reasons) {
+### # Deactivation Feedback Survey
 
-  $default_reasons['my_custom_reason'] = [
-    'title'       => 'My Custom Reason',
-    'placeholder' => 'Please specify the reason',
-  ]
+**⚡️ Filter Hook to Add Deactivate Reasons :**
 
-  $default_reasons['my_custom_reason_2'] = [
-    'title'       => 'My Custom Reason 2',
-    'placeholder' => '',
-  ]
+This filter allows adding additional deactivate reasons to the feedback survey. You can modify the `deactivate_reasons` array to include any custom reasons needed.
 
-  return $default_reasons;
-});
+```php
 
+add_filter($plugin_prefix . 'deactivate_reasons', 'add_deactivate_reasons', 10, 1);
+
+function add_deactivate_reasons($deactivate_reasons)
+{
+  // example of adding a custom deactivate reason
+  $deactivate_reasons[] = [
+    'title' => 'What could we have done to improve your experience?',
+    'placeholder' => 'Please provide your feedback here',
+  ];
+
+  return $deactivate_reasons;
+}
 ```

@@ -1,8 +1,9 @@
 <?php
 
-use BitApps\Assist\Core\Database\Blueprint;
-use BitApps\Assist\Core\Database\Migration;
-use BitApps\Assist\Core\Database\Schema;
+use BitApps\Assist\Config;
+use BitApps\Assist\Deps\BitApps\WPDatabase\Blueprint;
+use BitApps\Assist\Deps\BitApps\WPKit\Migration\Migration;
+use BitApps\Assist\Deps\BitApps\WPDatabase\Schema;
 
 if (!\defined('ABSPATH')) {
     exit;
@@ -12,7 +13,7 @@ final class BASTWidgetsTableMigration extends Migration
 {
     public function up()
     {
-        Schema::create('widgets', function (Blueprint $table) {
+        Schema::withPrefix(Config::get('DB_PREFIX'))->create('widgets', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->longtext('styles')->nullable();
@@ -37,6 +38,6 @@ final class BASTWidgetsTableMigration extends Migration
 
     public function down()
     {
-        Schema::drop('widgets');
+        Schema::withPrefix(Config::get('DB_PREFIX'))->drop('widgets');
     }
 }

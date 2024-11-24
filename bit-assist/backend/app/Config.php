@@ -19,11 +19,11 @@ class Config
 
     public const VAR_PREFIX = 'bit_assist_';
 
-    public const VERSION = '1.4.9';
+    public const VERSION = '1.5.0';
 
     public const DB_VERSION = '1.0.3';
 
-    public const REQUIRED_PHP_VERSION = '7.0';
+    public const REQUIRED_PHP_VERSION = '7.4';
 
     public const REQUIRED_WP_VERSION = '5.1';
 
@@ -99,6 +99,10 @@ class Config
 
             case 'UPLOAD_DIR':
                 return wp_upload_dir()['basedir'] . DIRECTORY_SEPARATOR . self::SLUG;
+
+            case 'DB_PREFIX':
+                global $wpdb;
+                return $wpdb->prefix . self::VAR_PREFIX;
 
             default:
                 return $default;
