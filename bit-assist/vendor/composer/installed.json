@@ -2,17 +2,17 @@
     "packages": [
         {
             "name": "bitapps/wp-database",
-            "version": "1.6",
-            "version_normalized": "1.6.0.0",
+            "version": "1.10",
+            "version_normalized": "1.10.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Bit-Apps-Pro/wp-database.git",
-                "reference": "1df65bf8f0f20008d93cb902afece85a4c1f7569"
+                "reference": "b9443004e40f33aa0f2a53fc33ae194664554c54"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Bit-Apps-Pro/wp-database/zipball/1df65bf8f0f20008d93cb902afece85a4c1f7569",
-                "reference": "1df65bf8f0f20008d93cb902afece85a4c1f7569",
+                "url": "https://api.github.com/repos/Bit-Apps-Pro/wp-database/zipball/b9443004e40f33aa0f2a53fc33ae194664554c54",
+                "reference": "b9443004e40f33aa0f2a53fc33ae194664554c54",
                 "shasum": ""
             },
             "require": {
@@ -24,7 +24,7 @@
                 "phpcompatibility/phpcompatibility-wp": "*",
                 "sirbrillig/phpcs-variable-analysis": "*"
             },
-            "time": "2024-07-27T07:40:01+00:00",
+            "time": "2025-02-12T11:31:17+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -350,10 +350,10 @@
             "time": "2020-12-06T23:41:30+00:00",
             "type": "composer-plugin",
             "extra": {
+                "class": "TypistTech\\Imposter\\Plugin\\ImposterPlugin",
                 "branch-alias": {
                     "dev-master": "0.6.x-dev"
-                },
-                "class": "TypistTech\\Imposter\\Plugin\\ImposterPlugin"
+                }
             },
             "installation-source": "dist",
             "autoload": {

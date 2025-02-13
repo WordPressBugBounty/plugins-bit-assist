@@ -464,17 +464,13 @@ class QueryBuilder
      */
     public function paginate($pageNo = 0, $perPage = 10)
     {
+        $selectedColumns = empty($this->select) ? ['*'] : $this->select;
+
+        $totalItems = (int) $this->count(); 
+
         $offset = ($pageNo > 1) ? ($pageNo * $perPage) - $perPage : 0;
-
-        $totalItems = (int) $this->count();
-
-        $this->take($perPage)->skip($offset);
-
-        $this->getLimit();
-
-        $this->getOffset();
-
-        $data = $this->get();
+                
+        $data =  $this->take($perPage)->skip($offset)->get($selectedColumns);
 
         $pages = ceil($totalItems / $perPage);
 
@@ -1372,7 +1368,7 @@ class QueryBuilder
     private function prepareColumnForWhere($clause)
     {
         if (isset($clause['column'])) {
-            return ' ' . $clause['column'];
+            return ' ' . sanitize_key($clause['column']);
         }
     }
 

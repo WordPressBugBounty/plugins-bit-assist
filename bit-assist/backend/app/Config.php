@@ -4,6 +4,8 @@
 
 namespace BitApps\Assist;
 
+use BitApps\AssistPro\Config as ProConfig;
+
 if (!\defined('ABSPATH')) {
     exit;
 }
@@ -19,7 +21,7 @@ class Config
 
     public const VAR_PREFIX = 'bit_assist_';
 
-    public const VERSION = '1.5.2';
+    public const VERSION = '1.5.3';
 
     public const DB_VERSION = '1.0.3';
 
@@ -184,6 +186,20 @@ class Config
     public static function isDev()
     {
         return \defined('BITAPPS_DEV') && BITAPPS_DEV;
+    }
+
+    /**
+     * Check if pro plugin exist and active
+     *
+     * @return bool
+     */
+    public static function isProActivated()
+    {
+        if (class_exists(ProConfig::class)) {
+            return ProConfig::isPro();
+        }
+
+        return false;
     }
 
     /**
