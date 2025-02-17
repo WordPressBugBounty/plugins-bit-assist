@@ -89,6 +89,7 @@ return array(
     'BitApps\\Assist\\HTTP\\Controllers\\WPPostController' => $baseDir . '/backend/app/HTTP/Controllers/WPPostController.php',
     'BitApps\\Assist\\HTTP\\Controllers\\WidgetChannelController' => $baseDir . '/backend/app/HTTP/Controllers/WidgetChannelController.php',
     'BitApps\\Assist\\HTTP\\Controllers\\WidgetController' => $baseDir . '/backend/app/HTTP/Controllers/WidgetController.php',
+    'BitApps\\Assist\\HTTP\\Middleware\\AdminCheckerMiddleware' => $baseDir . '/backend/app/HTTP/Middleware/AdminCheckerMiddleware.php',
     'BitApps\\Assist\\HTTP\\Middleware\\NonceCheckerMiddleware' => $baseDir . '/backend/app/HTTP/Middleware/NonceCheckerMiddleware.php',
     'BitApps\\Assist\\HTTP\\Requests\\WidgetChannelStoreRequest' => $baseDir . '/backend/app/HTTP/Requests/WidgetChannelStoreRequest.php',
     'BitApps\\Assist\\HTTP\\Requests\\WidgetChannelUpdateRequest' => $baseDir . '/backend/app/HTTP/Requests/WidgetChannelUpdateRequest.php',

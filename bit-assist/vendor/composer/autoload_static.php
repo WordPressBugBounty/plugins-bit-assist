@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitae8681113ac8ea403927979b978eece5
+class ComposerStaticInit3e77bda04a694d010f0b8f783406db39
 {
     public static $prefixLengthsPsr4 = array (
         'T' => 
@@ -137,6 +137,7 @@ class ComposerStaticInitae8681113ac8ea403927979b978eece5
         'BitApps\\Assist\\HTTP\\Controllers\\WPPostController' => __DIR__ . '/../..' . '/backend/app/HTTP/Controllers/WPPostController.php',
         'BitApps\\Assist\\HTTP\\Controllers\\WidgetChannelController' => __DIR__ . '/../..' . '/backend/app/HTTP/Controllers/WidgetChannelController.php',
         'BitApps\\Assist\\HTTP\\Controllers\\WidgetController' => __DIR__ . '/../..' . '/backend/app/HTTP/Controllers/WidgetController.php',
+        'BitApps\\Assist\\HTTP\\Middleware\\AdminCheckerMiddleware' => __DIR__ . '/../..' . '/backend/app/HTTP/Middleware/AdminCheckerMiddleware.php',
         'BitApps\\Assist\\HTTP\\Middleware\\NonceCheckerMiddleware' => __DIR__ . '/../..' . '/backend/app/HTTP/Middleware/NonceCheckerMiddleware.php',
         'BitApps\\Assist\\HTTP\\Requests\\WidgetChannelStoreRequest' => __DIR__ . '/../..' . '/backend/app/HTTP/Requests/WidgetChannelStoreRequest.php',
         'BitApps\\Assist\\HTTP\\Requests\\WidgetChannelUpdateRequest' => __DIR__ . '/../..' . '/backend/app/HTTP/Requests/WidgetChannelUpdateRequest.php',
@@ -178,9 +179,9 @@ class ComposerStaticInitae8681113ac8ea403927979b978eece5
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitae8681113ac8ea403927979b978eece5::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitae8681113ac8ea403927979b978eece5::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitae8681113ac8ea403927979b978eece5::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit3e77bda04a694d010f0b8f783406db39::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit3e77bda04a694d010f0b8f783406db39::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit3e77bda04a694d010f0b8f783406db39::$classMap;
 
         }, null, ClassLoader::class);
     }

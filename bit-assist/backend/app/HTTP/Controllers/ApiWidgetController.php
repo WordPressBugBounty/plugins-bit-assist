@@ -7,7 +7,6 @@ use BitApps\Assist\Config;
 use BitApps\Assist\Deps\BitApps\WPKit\Http\Request\Request;
 use BitApps\Assist\Model\Widget;
 use BitApps\Assist\Model\WidgetChannel;
-use BitApps\AssistPro\Config as ProConfig;
 use stdClass;
 use WP_Query;
 
@@ -23,7 +22,11 @@ final class ApiWidgetController
 
     public function bitAssistWidget(Request $request)
     {
-        $widget = $this->getWidget($request->domain);
+        $validated = $request->validate([
+            'domain' => ['required', 'string', 'sanitize:url'],
+        ]);
+
+        $widget = $this->getWidget($validated['domain']);
 
         if (!isset($widget->id)) {
             return 'Widget not found';
@@ -101,8 +104,8 @@ final class ApiWidgetController
             return ['message' => 'WooCommerce not installed or active.', 'status_code' => 404];
         }
 
-        $order_id = $request['number'];
-        $billing_email = $request['email'];
+        $order_id = sanitize_text_field($request['number']);
+        $billing_email = sanitize_email($request['email']);
         $allOrders = [];
 
         global $wpdb;
