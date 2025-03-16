@@ -1,22 +1,22 @@
 <?php return array(
     'root' => array(
-        'pretty_version' => '1.5.5.x-dev',
-        'version' => '1.5.5.9999999-dev',
+        'pretty_version' => '1.5.6.x-dev',
+        'version' => '1.5.6.9999999-dev',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '5ecb5d55921145b5ac0b8590551decb4e103cfd8',
+        'reference' => '63da436eb7f1d65e626ca14374aa273f36227df7',
         'name' => 'bitapps/assist',
         'dev' => false,
     ),
     'versions' => array(
         'bitapps/assist' => array(
-            'pretty_version' => '1.5.5.x-dev',
-            'version' => '1.5.5.9999999-dev',
+            'pretty_version' => '1.5.6.x-dev',
+            'version' => '1.5.6.9999999-dev',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '5ecb5d55921145b5ac0b8590551decb4e103cfd8',
+            'reference' => '63da436eb7f1d65e626ca14374aa273f36227df7',
             'dev_requirement' => false,
         ),
         'bitapps/wp-database' => array(
