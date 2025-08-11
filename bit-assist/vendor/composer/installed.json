@@ -61,17 +61,17 @@
         },
         {
             "name": "bitapps/wp-kit",
-            "version": "1.7",
-            "version_normalized": "1.7.0.0",
+            "version": "1.9",
+            "version_normalized": "1.9.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Bit-Apps-Pro/wp-kit.git",
-                "reference": "37282f745e13161fddbe9e0b9c9ddf9f1be85e63"
+                "reference": "13f0da30e00d9d4c02ce5ea2e9e624fd4a8ac7d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Bit-Apps-Pro/wp-kit/zipball/37282f745e13161fddbe9e0b9c9ddf9f1be85e63",
-                "reference": "37282f745e13161fddbe9e0b9c9ddf9f1be85e63",
+                "url": "https://api.github.com/repos/Bit-Apps-Pro/wp-kit/zipball/13f0da30e00d9d4c02ce5ea2e9e624fd4a8ac7d2",
+                "reference": "13f0da30e00d9d4c02ce5ea2e9e624fd4a8ac7d2",
                 "shasum": ""
             },
             "require": {
@@ -83,7 +83,7 @@
                 "phpcompatibility/phpcompatibility-wp": "*",
                 "sirbrillig/phpcs-variable-analysis": "*"
             },
-            "time": "2024-10-17T12:31:58+00:00",
+            "time": "2025-03-13T08:40:35+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -108,7 +108,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Bit-Apps-Pro/wp-kit/issues",
-                "source": "https://github.com/Bit-Apps-Pro/wp-kit/tree/1.7"
+                "source": "https://github.com/Bit-Apps-Pro/wp-kit/tree/1.9"
             },
             "install-path": "../bitapps/wp-kit"
         },

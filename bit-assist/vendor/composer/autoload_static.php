@@ -137,6 +137,8 @@ class ComposerStaticInit875c32c5e09b021000dd007008fd9593
         'BitApps\\Assist\\HTTP\\Controllers\\WPPostController' => __DIR__ . '/../..' . '/backend/app/HTTP/Controllers/WPPostController.php',
         'BitApps\\Assist\\HTTP\\Controllers\\WidgetChannelController' => __DIR__ . '/../..' . '/backend/app/HTTP/Controllers/WidgetChannelController.php',
         'BitApps\\Assist\\HTTP\\Controllers\\WidgetController' => __DIR__ . '/../..' . '/backend/app/HTTP/Controllers/WidgetController.php',
+        'BitApps\\Assist\\HTTP\\Controllers\\WooChannelController' => __DIR__ . '/../..' . '/backend/app/HTTP/Controllers/WooChannelController.php',
+        'BitApps\\Assist\\HTTP\\Controllers\\WpSearchController' => __DIR__ . '/../..' . '/backend/app/HTTP/Controllers/WpSearchController.php',
         'BitApps\\Assist\\HTTP\\Middleware\\AdminCheckerMiddleware' => __DIR__ . '/../..' . '/backend/app/HTTP/Middleware/AdminCheckerMiddleware.php',
         'BitApps\\Assist\\HTTP\\Middleware\\NonceCheckerMiddleware' => __DIR__ . '/../..' . '/backend/app/HTTP/Middleware/NonceCheckerMiddleware.php',
         'BitApps\\Assist\\HTTP\\Requests\\WidgetChannelStoreRequest' => __DIR__ . '/../..' . '/backend/app/HTTP/Requests/WidgetChannelStoreRequest.php',
