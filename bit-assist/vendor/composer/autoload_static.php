@@ -7,12 +7,12 @@ namespace Composer\Autoload;
 class ComposerStaticInit875c32c5e09b021000dd007008fd9593
 {
     public static $prefixLengthsPsr4 = array (
-        'T' => 
+        'T' =>
         array (
             'TypistTech\\Imposter\\Plugin\\' => 27,
             'TypistTech\\Imposter\\' => 20,
         ),
-        'B' => 
+        'B' =>
         array (
             'BitApps\\WPValidator\\' => 20,
             'BitApps\\WPTelemetry\\' => 20,
@@ -23,31 +23,31 @@ class ComposerStaticInit875c32c5e09b021000dd007008fd9593
     );
 
     public static $prefixDirsPsr4 = array (
-        'TypistTech\\Imposter\\Plugin\\' => 
+        'TypistTech\\Imposter\\Plugin\\' =>
         array (
             0 => __DIR__ . '/..' . '/typisttech/imposter-plugin/src',
         ),
-        'TypistTech\\Imposter\\' => 
+        'TypistTech\\Imposter\\' =>
         array (
             0 => __DIR__ . '/..' . '/typisttech/imposter/src',
         ),
-        'BitApps\\WPValidator\\' => 
+        'BitApps\\WPValidator\\' =>
         array (
             0 => __DIR__ . '/..' . '/bitapps/wp-validator/src',
         ),
-        'BitApps\\WPTelemetry\\' => 
+        'BitApps\\WPTelemetry\\' =>
         array (
             0 => __DIR__ . '/..' . '/bitapps/wp-telemetry/src',
         ),
-        'BitApps\\WPKit\\' => 
+        'BitApps\\WPKit\\' =>
         array (
             0 => __DIR__ . '/..' . '/bitapps/wp-kit/src',
         ),
-        'BitApps\\WPDatabase\\' => 
+        'BitApps\\WPDatabase\\' =>
         array (
             0 => __DIR__ . '/..' . '/bitapps/wp-database/src',
         ),
-        'BitApps\\Assist\\' => 
+        'BitApps\\Assist\\' =>
         array (
             0 => __DIR__ . '/../..' . '/backend/app',
         ),
@@ -140,6 +140,7 @@ class ComposerStaticInit875c32c5e09b021000dd007008fd9593
         'BitApps\\Assist\\HTTP\\Controllers\\WooChannelController' => __DIR__ . '/../..' . '/backend/app/HTTP/Controllers/WooChannelController.php',
         'BitApps\\Assist\\HTTP\\Controllers\\WpSearchController' => __DIR__ . '/../..' . '/backend/app/HTTP/Controllers/WpSearchController.php',
         'BitApps\\Assist\\HTTP\\Middleware\\AdminCheckerMiddleware' => __DIR__ . '/../..' . '/backend/app/HTTP/Middleware/AdminCheckerMiddleware.php',
+        'BitApps\\Assist\\HTTP\\Middleware\\LoggedInCheckerMiddleware' => __DIR__ . '/../..' . '/backend/app/HTTP/Middleware/LoggedInCheckerMiddleware.php',
         'BitApps\\Assist\\HTTP\\Middleware\\NonceCheckerMiddleware' => __DIR__ . '/../..' . '/backend/app/HTTP/Middleware/NonceCheckerMiddleware.php',
         'BitApps\\Assist\\HTTP\\Requests\\WidgetChannelStoreRequest' => __DIR__ . '/../..' . '/backend/app/HTTP/Requests/WidgetChannelStoreRequest.php',
         'BitApps\\Assist\\HTTP\\Requests\\WidgetChannelUpdateRequest' => __DIR__ . '/../..' . '/backend/app/HTTP/Requests/WidgetChannelUpdateRequest.php',

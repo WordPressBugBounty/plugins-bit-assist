@@ -92,6 +92,7 @@ return array(
     'BitApps\\Assist\\HTTP\\Controllers\\WooChannelController' => $baseDir . '/backend/app/HTTP/Controllers/WooChannelController.php',
     'BitApps\\Assist\\HTTP\\Controllers\\WpSearchController' => $baseDir . '/backend/app/HTTP/Controllers/WpSearchController.php',
     'BitApps\\Assist\\HTTP\\Middleware\\AdminCheckerMiddleware' => $baseDir . '/backend/app/HTTP/Middleware/AdminCheckerMiddleware.php',
+    'BitApps\\Assist\\HTTP\\Middleware\\LoggedInCheckerMiddleware' => $baseDir . '/backend/app/HTTP/Middleware/LoggedInCheckerMiddleware.php',
     'BitApps\\Assist\\HTTP\\Middleware\\NonceCheckerMiddleware' => $baseDir . '/backend/app/HTTP/Middleware/NonceCheckerMiddleware.php',
     'BitApps\\Assist\\HTTP\\Requests\\WidgetChannelStoreRequest' => $baseDir . '/backend/app/HTTP/Requests/WidgetChannelStoreRequest.php',
     'BitApps\\Assist\\HTTP\\Requests\\WidgetChannelUpdateRequest' => $baseDir . '/backend/app/HTTP/Requests/WidgetChannelUpdateRequest.php',
