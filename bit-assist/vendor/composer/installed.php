@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'bitapps/assist',
-        'pretty_version' => '1.6.0',
-        'version' => '1.6.0.0',
-        'reference' => '88cb852704f8f67eb6e264dbe8a16b757d0147a9',
+        'pretty_version' => '1.7.2',
+        'version' => '1.7.2.0',
+        'reference' => '7b6201042f886e50ce3f2a893eecb40f63eba6cc',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'bitapps/assist' => array(
-            'pretty_version' => '1.6.0',
-            'version' => '1.6.0.0',
-            'reference' => '88cb852704f8f67eb6e264dbe8a16b757d0147a9',
+            'pretty_version' => '1.7.2',
+            'version' => '1.7.2.0',
+            'reference' => '7b6201042f886e50ce3f2a893eecb40f63eba6cc',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -47,9 +47,9 @@
             'dev_requirement' => false,
         ),
         'bitapps/wp-validator' => array(
-            'pretty_version' => '1.2.1',
-            'version' => '1.2.1.0',
-            'reference' => '294d6a7c35436419060dc067f58a9c5a0d72b37e',
+            'pretty_version' => '1.2.3',
+            'version' => '1.2.3.0',
+            'reference' => '43a6f68414f5c580122f136cda45624e9fcaf837',
             'type' => 'library',
             'install_path' => __DIR__ . '/../bitapps/wp-validator',
             'aliases' => array(),

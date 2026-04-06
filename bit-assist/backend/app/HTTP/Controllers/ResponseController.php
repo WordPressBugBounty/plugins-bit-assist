@@ -2,8 +2,12 @@
 
 namespace BitApps\Assist\HTTP\Controllers;
 
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 use BitApps\Assist\Config;
-use BitApps\Assist\Deps\BitApps\WPKit\Http\Client\HttpClient;
+use BitApps\Assist\Deps\BitApps\WPKit\Hooks\Hooks;
 use BitApps\Assist\Deps\BitApps\WPKit\Http\Request\Request;
 use BitApps\Assist\Deps\BitApps\WPKit\Http\Response as Res;
 use BitApps\Assist\Helpers\FileHandler;
@@ -24,14 +28,14 @@ final class ResponseController
     public function othersData($widgetChannelId)
     {
         if (\is_null($widgetChannelId)) {
-            return Res::error('WidgetChannel id is required');
+            return Res::error(__('WidgetChannel id is required', 'bit-assist'));
         }
 
         $config = WidgetChannel::where('id', $widgetChannelId)->select(['config'])->first()->config;
         $totalResponses = Response::where('widget_channel_id', $widgetChannelId)->count();
 
         return [
-            'channelName'    => isset($config->title) ? $config->title : 'Untitled',
+            'channelName'    => isset($config->title) ? $config->title : __('Untitled', 'bit-assist'),
             'formFields'     => isset($config->card_config->form_fields) ? $config->card_config->form_fields : [],
             'totalResponses' => $totalResponses,
         ];
@@ -50,10 +54,7 @@ final class ResponseController
 
         $config = WidgetChannel::where('id', $widgetChannelId)->select(['config'])->first()->config;
 
-        if (!empty($config->card_config->webhook_url) && Config::isProActivated()) {
-            $webhook = new HttpClient();
-            $webhook->request($config->card_config->webhook_url, 'POST', wp_json_encode($formData));
-        }
+        Hooks::doAction(Config::withPrefix('after_form_response'), $formData, $config);
 
         if (!empty($config->store_responses)) {
             if (!empty($request->files())) {
@@ -71,12 +72,12 @@ final class ResponseController
             $this->sendMail($config->card_config->send_mail_to, $config->title, $formData);
         }
 
-        return Res::success(!empty($config->card_config->success_message) ? $config->card_config->success_message : 'Submitted successfully');
+        return Res::success(!empty($config->card_config->success_message) ? $config->card_config->success_message : __('Submitted successfully', 'bit-assist'));
     }
 
     public function sendMail($email, $formTitle, $data)
     {
-        $subject = $formTitle . ' Submitted';
+        $subject = $formTitle . ' ' . __('Submitted', 'bit-assist');
         add_filter('wp_mail_content_type', [$this, 'content_type']);
         $emailTemplate = '<h2>' . $subject . '</h2>';
         foreach ($data as $key => $value) {
@@ -95,7 +96,7 @@ final class ResponseController
     {
         Response::whereIn('id', $request->responseIds)->delete();
 
-        return Res::success('Selected response deleted');
+        return Res::success(__('Selected response deleted', 'bit-assist'));
     }
 
     private function storeFiles($files, $widgetChannelId)

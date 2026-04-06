@@ -154,6 +154,7 @@ class ComposerStaticInit875c32c5e09b021000dd007008fd9593
         'BitApps\\Assist\\Plugin' => __DIR__ . '/../..' . '/backend/app/Plugin.php',
         'BitApps\\Assist\\Providers\\HookProvider' => __DIR__ . '/../..' . '/backend/app/Providers/HookProvider.php',
         'BitApps\\Assist\\Providers\\InstallerProvider' => __DIR__ . '/../..' . '/backend/app/Providers/InstallerProvider.php',
+        'BitApps\\Assist\\Update\\LegacyProUpdateCache' => __DIR__ . '/../..' . '/backend/app/Update/LegacyProUpdateCache.php',
         'BitApps\\Assist\\Views\\Layout' => __DIR__ . '/../..' . '/backend/app/Views/Layout.php',
         'BitApps\\Assist\\Views\\WebsiteLayout' => __DIR__ . '/../..' . '/backend/app/Views/WebsiteLayout.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',

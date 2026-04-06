@@ -2,15 +2,19 @@
 
 namespace BitApps\Assist;
 
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 /*
  * Main class for the plugin.
  *
  * @since 1.0.0-alpha
  */
 
-use BitApps\Assist\Deps\BitApps\WPKit\Migration\MigrationHelper;
 use BitApps\Assist\Deps\BitApps\WPKit\Hooks\Hooks;
 use BitApps\Assist\Deps\BitApps\WPKit\Http\RequestType;
+use BitApps\Assist\Deps\BitApps\WPKit\Migration\MigrationHelper;
 use BitApps\Assist\Deps\BitApps\WPKit\Utils\Capabilities;
 use BitApps\Assist\Deps\BitApps\WPTelemetry\Telemetry\Telemetry;
 use BitApps\Assist\Deps\BitApps\WPTelemetry\Telemetry\TelemetryConfig;
@@ -20,6 +24,7 @@ use BitApps\Assist\HTTP\Middleware\LoggedInCheckerMiddleware;
 use BitApps\Assist\HTTP\Middleware\NonceCheckerMiddleware;
 use BitApps\Assist\Providers\HookProvider;
 use BitApps\Assist\Providers\InstallerProvider;
+use BitApps\Assist\Update\LegacyProUpdateCache;
 use BitApps\Assist\Views\Layout;
 use BitApps\Assist\Views\WebsiteLayout;
 
@@ -63,9 +68,11 @@ final class Plugin
         Hooks::doAction(Config::withPrefix('loaded'));
         Hooks::addAction('init', [$this, 'registerProviders']);
         Hooks::addFilter('plugin_action_links_' . Config::get('BASENAME'), [$this, 'actionLinks']);
+        (new LegacyProUpdateCache())->register();
 
         /**
          * Add schedule to cleanup analytics if the plugin version is less than or equal to 1.5.3
+         *
          * @since 1.5.4
          */
         if (version_compare(Config::getOption('version'), '1.5.3', '<=')) {
@@ -86,7 +93,7 @@ final class Plugin
 
         TelemetryConfig::setServerBaseUrl('https://wp-api.bitapps.pro/public/');
         TelemetryConfig::setTermsUrl('https://bitapps.pro/terms-of-service/');
-        TelemetryConfig::setPolicyUrl('https://bitapps.pro/refund-policy/');
+        TelemetryConfig::setPolicyUrl('https://bitapps.pro/privacy-policy/');
 
         Telemetry::report()->init();
         Telemetry::feedback()->init();

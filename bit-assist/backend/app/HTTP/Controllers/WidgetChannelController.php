@@ -2,7 +2,12 @@
 
 namespace BitApps\Assist\HTTP\Controllers;
 
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 use BitApps\Assist\Config;
+use BitApps\Assist\Deps\BitApps\WPKit\Hooks\Hooks;
 use BitApps\Assist\Deps\BitApps\WPKit\Http\Request\Request;
 use BitApps\Assist\Deps\BitApps\WPKit\Http\Response;
 use BitApps\Assist\HTTP\Requests\WidgetChannelStoreRequest;
@@ -34,53 +39,41 @@ final class WidgetChannelController
 
     public function store(WidgetChannelStoreRequest $request)
     {
-        $validated = $this->sanitizeRequest($request->all());
-
-        $isPro = Config::isProActivated();
-
-        if (!$isPro && !empty($validated['config']['hide_after_office_hours'])) {
-            unset($validated['config']['hide_after_office_hours']);
-        }
-        if (!$isPro && $validated['channel_name'] === 'Custom-Form' && !empty($validated['config']['card_config']['webhook_url'])) {
-            unset($validated['config']['card_config']['webhook_url']);
-        }
+        $validated = Hooks::applyFilter(
+            Config::withPrefix('widget_channel_config_before_save'),
+            $this->sanitizeRequest($request->all())
+        );
 
         $result = WidgetChannel::insert($validated);
 
         if ($result) {
-            return Response::success('Channel created successfully');
+            return Response::success(__('Channel created successfully', 'bit-assist'));
         }
 
-        return Response::error('Something went wrong');
+        return Response::error(__('Something went wrong', 'bit-assist'));
     }
 
     public function update(WidgetChannelUpdateRequest $request, WidgetChannel $widgetChannel)
     {
-        $validated = $this->sanitizeRequest($request->all());
-
-        $isPro = Config::isProActivated();
-
-        if (!$isPro && !empty($validated['config']['hide_after_office_hours'])) {
-            unset($validated['config']['hide_after_office_hours']);
-        }
-        if (!$isPro && $validated['channel_name'] === 'Custom-Form' && !empty($validated['config']['card_config']['webhook_url'])) {
-            unset($validated['config']['card_config']['webhook_url']);
-        }
+        $validated = Hooks::applyFilter(
+            Config::withPrefix('widget_channel_config_before_save'),
+            $this->sanitizeRequest($request->all())
+        );
 
         $widgetChannel->update($validated);
 
         if ($widgetChannel->save()) {
-            return Response::success('Channel updated successfully');
+            return Response::success(__('Channel updated successfully', 'bit-assist'));
         }
 
-        return Response::error('Something went wrong');
+        return Response::error(__('Something went wrong', 'bit-assist'));
     }
 
     public function destroy(WidgetChannel $widgetChannel)
     {
         $widgetChannel->delete();
 
-        return Response::success('Channel deleted');
+        return Response::success(__('Channel deleted', 'bit-assist'));
     }
 
     public function updateSequence(Request $request)
@@ -97,25 +90,20 @@ final class WidgetChannelController
                 ->save();
         }
 
-        return Response::success('Sequence ordered');
+        return Response::success(__('Sequence ordered', 'bit-assist'));
     }
 
     public function copy(WidgetChannel $widgetChannel)
     {
-        $isPro = Config::isProActivated();
-        if (!$isPro && WidgetChannel::where('widget_id', $widgetChannel->widget_id)->count() >= 2) {
-            return Response::error('You can use 2 channel in free version.');
-        }
-
         if ($widgetChannel->exists()) {
             $newWidgetChannel = $this->replicate($widgetChannel);
             $result = WidgetChannel::insert((array) $newWidgetChannel);
             if ($result) {
-                return Response::success('Channel copied successfully');
+                return Response::success(__('Channel copied successfully', 'bit-assist'));
             }
         }
 
-        return Response::error('Something went wrong');
+        return Response::error(__('Something went wrong', 'bit-assist'));
     }
 
     private function replicate($widgetChannel)
@@ -124,7 +112,7 @@ final class WidgetChannelController
         $newWidgetChannel->widget_id = $widgetChannel->widget_id;
         $newWidgetChannel->channel_name = $widgetChannel->channel_name;
         $newWidgetChannel->config = $widgetChannel->config;
-        $newWidgetChannel->config->title = $widgetChannel->config->title . ' (Copy)';
+        $newWidgetChannel->config->title = $widgetChannel->config->title . ' ' . __('(copy)', 'bit-assist');
         $newWidgetChannel->sequence = WidgetChannel::where('widget_id', $widgetChannel->widget_id)->max('sequence') + 1;
         $newWidgetChannel->status = $widgetChannel->status;
 
@@ -182,6 +170,7 @@ final class WidgetChannelController
     private function sanitizeChannelTitle($validated)
     {
         $validated['config']['title'] = sanitize_text_field($validated['config']['title']);
+
         return $validated;
     }
 

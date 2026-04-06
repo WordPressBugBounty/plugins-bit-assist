@@ -2,13 +2,17 @@
 
 namespace BitApps\Assist\Model;
 
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 use BitApps\Assist\Config;
 use BitApps\Assist\Deps\BitApps\WPDatabase\Model;
 
 class Widget extends Model
 {
     protected $prefix = Config::VAR_PREFIX;
-    
+
     protected $casts = [
         'styles'           => 'object',
         'call_to_action'   => 'object',
@@ -30,7 +34,6 @@ class Widget extends Model
         'styles',
         'domains',
         'business_hours',
-        'timezone',
         'exclude_pages',
         'initial_delay',
         'page_scroll',

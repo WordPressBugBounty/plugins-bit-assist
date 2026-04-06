@@ -4,9 +4,7 @@
 
 namespace BitApps\Assist;
 
-use BitApps\AssistPro\Config as ProConfig;
-
-if (!\defined('ABSPATH')) {
+if (!defined('ABSPATH')) {
     exit;
 }
 
@@ -21,7 +19,7 @@ class Config
 
     public const VAR_PREFIX = 'bit_assist_';
 
-    public const VERSION = '1.6.0';
+    public const VERSION = '1.7.2';
 
     public const DB_VERSION = '1.0.3';
 
@@ -59,14 +57,14 @@ class Config
                 return plugin_dir_path(self::get('MAIN_FILE'));
 
             case 'SITE_URL':
-                $parsedUrl = parse_url(get_admin_url());
+                $parsedUrl = wp_parse_url(get_admin_url());
                 $siteUrl = $parsedUrl['scheme'] . '://' . $parsedUrl['host'];
                 $siteUrl .= empty($parsedUrl['port']) ? null : ':' . $parsedUrl['port'];
 
                 return $siteUrl;
 
             case 'SITE_DOMAIN':
-                $parsedUrl = parse_url(get_admin_url());
+                $parsedUrl = wp_parse_url(get_admin_url());
 
                 return $parsedUrl['host'];
 
@@ -186,21 +184,7 @@ class Config
 
     public static function isDev()
     {
-        return \defined('BITAPPS_DEV') && BITAPPS_DEV;
-    }
-
-    /**
-     * Check if pro plugin exist and active
-     *
-     * @return bool
-     */
-    public static function isProActivated()
-    {
-        if (class_exists(ProConfig::class)) {
-            return ProConfig::isPro();
-        }
-
-        return false;
+        return defined('BITAPPS_DEV') && BITAPPS_DEV;
     }
 
     /**
@@ -238,8 +222,8 @@ class Config
         return [
             'Home' => [
                 'type'       => 'menu',
-                'title'      => __('Bit Assist', 'bit-assist'),
-                'name'       => __('Bit Assist', 'bit-assist'),
+                'title'      => 'Bit Assist',
+                'name'       => 'Bit Assist',
                 'capability' => 'manage_options',
                 'slug'       => self::SLUG,
                 'callback'   => 'body',
@@ -249,7 +233,7 @@ class Config
             'All Widgets' => [
                 'parent'     => self::SLUG,
                 'type'       => 'submenu',
-                'name'       => 'All Widgets',
+                'name'       => __('All Widgets', 'bit-assist'),
                 'capability' => 'manage_options',
                 'slug'       => self::SLUG . '#/',
             ],
