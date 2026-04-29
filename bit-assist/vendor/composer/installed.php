@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'bitapps/assist',
-        'pretty_version' => '1.7.2',
-        'version' => '1.7.2.0',
-        'reference' => '7b6201042f886e50ce3f2a893eecb40f63eba6cc',
+        'pretty_version' => '1.8.0',
+        'version' => '1.8.0.0',
+        'reference' => '56b4097c7fe39d1c8011b3ee8061e9636d2b01a3',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'bitapps/assist' => array(
-            'pretty_version' => '1.7.2',
-            'version' => '1.7.2.0',
-            'reference' => '7b6201042f886e50ce3f2a893eecb40f63eba6cc',
+            'pretty_version' => '1.8.0',
+            'version' => '1.8.0.0',
+            'reference' => '56b4097c7fe39d1c8011b3ee8061e9636d2b01a3',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

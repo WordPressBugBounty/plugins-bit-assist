@@ -106,6 +106,7 @@ return array(
     'BitApps\\Assist\\Plugin' => $baseDir . '/backend/app/Plugin.php',
     'BitApps\\Assist\\Providers\\HookProvider' => $baseDir . '/backend/app/Providers/HookProvider.php',
     'BitApps\\Assist\\Providers\\InstallerProvider' => $baseDir . '/backend/app/Providers/InstallerProvider.php',
+    'BitApps\\Assist\\Services\\FormMailer' => $baseDir . '/backend/app/Services/FormMailer.php',
     'BitApps\\Assist\\Update\\LegacyProUpdateCache' => $baseDir . '/backend/app/Update/LegacyProUpdateCache.php',
     'BitApps\\Assist\\Views\\Layout' => $baseDir . '/backend/app/Views/Layout.php',
     'BitApps\\Assist\\Views\\WebsiteLayout' => $baseDir . '/backend/app/Views/WebsiteLayout.php',
