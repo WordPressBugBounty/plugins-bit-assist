@@ -147,6 +147,7 @@ class ComposerStaticInit875c32c5e09b021000dd007008fd9593
         'BitApps\\Assist\\HTTP\\Requests\\WidgetStoreRequest' => __DIR__ . '/../..' . '/backend/app/HTTP/Requests/WidgetStoreRequest.php',
         'BitApps\\Assist\\HTTP\\Requests\\WidgetUpdateRequest' => __DIR__ . '/../..' . '/backend/app/HTTP/Requests/WidgetUpdateRequest.php',
         'BitApps\\Assist\\Helpers\\FileHandler' => __DIR__ . '/../..' . '/backend/app/Helpers/FileHandler.php',
+        'BitApps\\Assist\\Helpers\\SvgSanitizer' => __DIR__ . '/../..' . '/backend/app/Helpers/SvgSanitizer.php',
         'BitApps\\Assist\\Model\\Analytics' => __DIR__ . '/../..' . '/backend/app/Model/Analytics.php',
         'BitApps\\Assist\\Model\\Response' => __DIR__ . '/../..' . '/backend/app/Model/Response.php',
         'BitApps\\Assist\\Model\\Widget' => __DIR__ . '/../..' . '/backend/app/Model/Widget.php',

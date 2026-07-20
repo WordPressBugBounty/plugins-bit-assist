@@ -99,6 +99,7 @@ return array(
     'BitApps\\Assist\\HTTP\\Requests\\WidgetStoreRequest' => $baseDir . '/backend/app/HTTP/Requests/WidgetStoreRequest.php',
     'BitApps\\Assist\\HTTP\\Requests\\WidgetUpdateRequest' => $baseDir . '/backend/app/HTTP/Requests/WidgetUpdateRequest.php',
     'BitApps\\Assist\\Helpers\\FileHandler' => $baseDir . '/backend/app/Helpers/FileHandler.php',
+    'BitApps\\Assist\\Helpers\\SvgSanitizer' => $baseDir . '/backend/app/Helpers/SvgSanitizer.php',
     'BitApps\\Assist\\Model\\Analytics' => $baseDir . '/backend/app/Model/Analytics.php',
     'BitApps\\Assist\\Model\\Response' => $baseDir . '/backend/app/Model/Response.php',
     'BitApps\\Assist\\Model\\Widget' => $baseDir . '/backend/app/Model/Widget.php',
